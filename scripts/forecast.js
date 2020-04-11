@@ -1,4 +1,4 @@
-const apiKey = 'UjGZ3wDnAgxo5dfepqdFeA5ClutLSTQe  zzazs';
+const apiKey = 'UjGZ3wDnAgxo5dfepqdFeA5ClutLSTQe';
 
 const buildQueryString = queryParams => {
   queryParams = queryParams ?? [];
@@ -9,7 +9,7 @@ const buildQueryString = queryParams => {
     .join('&');
 };
 
-const getCityCode = async city => await fetchApi(
+const getCity = async city => await fetchApi(
   'locations/v1/cities/search',
   data => data[0],
   [{ key: 'q', value: city }]);
@@ -27,8 +27,3 @@ const fetchApi = async (path, dataSelector, queryParams) => {
 
   return dataSelector(data);
 };
-
-getCityCode('manchester')
-  .then(data => getWeather(data.Key))
-  .then(data => console.log(data))
-  .catch(err => console.log(err));
