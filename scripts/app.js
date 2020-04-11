@@ -1,6 +1,8 @@
 const cityForm = document.querySelector('form.change-location');
 const cardBlock = document.querySelector('.card');
 const detailsBlock = document.querySelector('.details');
+const timeImg = document.querySelector('.time');
+const iconImg = document.querySelector('.icon img')
 
 const updateUI = cityInformation => {
   const { details, weather } = cityInformation;
@@ -12,6 +14,12 @@ const updateUI = cityInformation => {
         <span>${weather.Temperature.Metric.Value}</span>
         <span>&deg;C</span>
       </div>`;
+
+  const iconSrc = `img/icons/${weather.WeatherIcon}.svg`;
+  iconImg.setAttribute('src', iconSrc);
+
+  const timeSrc = weather.IsDayTime ? 'img/day.svg' : 'img/night.svg';
+  timeImg.setAttribute('src', timeSrc);
 
   cardBlock.classList.remove('d-none');
 };
