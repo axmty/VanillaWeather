@@ -3,8 +3,7 @@ const cardBlock = document.querySelector('.card');
 const detailsBlock = document.querySelector('.details');
 
 const updateUI = cityInformation => {
-  const details = cityInformation.details;
-  const weather = cityInformation.weather;
+  const { details, weather } = cityInformation;
 
   detailsBlock.innerHTML = `
     <h5 class="my-3">${details.EnglishName}</h5>
