@@ -13,7 +13,7 @@ const loadCity = () => localStorage.getItem(cityStorageKey);
 
 const updateInformation = city => getCityInformation(city)
   .then(data => updateUI(data))
-  .catch(err => console.log(err));
+  .catch(err => console.error(err));
 
 const updateUI = cityInformation => {
   const { details, weather } = cityInformation;
