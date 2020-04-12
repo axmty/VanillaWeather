@@ -6,6 +6,15 @@ const cityNameLabel = document.querySelector('#city-name');
 const weatherTextLabel = document.querySelector('#weather-text');
 const weatherTempLabel = document.querySelector('#weather-temp');
 
+const cityStorageKey = 'city';
+
+const saveCity = city => localStorage.setItem(cityStorageKey, city);
+const loadCity = () => localStorage.getItem(cityStorageKey);
+
+const updateInformation = city => getCityInformation(city)
+  .then(data => updateUI(data))
+  .catch(err => console.log(err));
+
 const updateUI = cityInformation => {
   const { details, weather } = cityInformation;
 
@@ -35,7 +44,12 @@ cityForm.addEventListener('submit', e => {
   const city = cityForm.city.value.trim();
   cityForm.reset();
 
-  getCityInformation(city)
-    .then(data => updateUI(data))
-    .catch(err => console.log(err));
+  updateInformation(city);
+
+  saveCity(city);
 });
+
+const lastCity = loadCity();
+if (lastCity !== null) {
+  updateInformation(lastCity);
+}
