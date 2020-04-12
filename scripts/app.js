@@ -1,19 +1,17 @@
 const cityForm = document.querySelector('form.change-location');
 const cardBlock = document.querySelector('.card');
-const detailsBlock = document.querySelector('.details');
 const timeImg = document.querySelector('.time');
-const iconImg = document.querySelector('.icon img')
+const iconImg = document.querySelector('.icon img');
+const cityNameLabel = document.querySelector('#city-name');
+const weatherTextLabel = document.querySelector('#weather-text');
+const weatherTempLabel = document.querySelector('#weather-temp');
 
 const updateUI = cityInformation => {
   const { details, weather } = cityInformation;
 
-  detailsBlock.innerHTML = `
-    <h5 class="my-3">${details.EnglishName}</h5>
-      <div class="my-3">${weather.WeatherText}</div>
-      <div class="display-4 my-4">
-        <span>${weather.Temperature.Metric.Value}</span>
-        <span>&deg;C</span>
-      </div>`;
+  cityNameLabel.textContent = details.EnglishName;
+  weatherTextLabel.textContent = weather.WeatherText;
+  weatherTempLabel.textContent = weather.Temperature.Metric.Value;
 
   const iconSrc = `img/icons/${weather.WeatherIcon}.svg`;
   iconImg.setAttribute('src', iconSrc);
