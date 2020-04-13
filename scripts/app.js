@@ -30,8 +30,10 @@ const updateUI = ({ details, weather }) => {
 };
 
 const getCityInformation = async city => {
-  const details = await getCity(city);
-  const weather = await getWeather(details.Key);
+  const forecast = new Forecast();
+
+  const details = await forecast.getCity(city);
+  const weather = await forecast.getWeather(details.Key);
 
   return { details, weather };
 };

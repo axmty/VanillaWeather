@@ -1,38 +1,47 @@
-const apiKey = 'UjGZ3wDnAgxo5dfepqdFeA5ClutLSTQe';
+class Forecast {
+  constructor() {
+    this.apiKey = 'UjGZ3wDnAgxo5dfepqdFeA5ClutLSTQe';
+    this.apiBaseUri = 'http://dataservice.accuweather.com/';
+  }
 
-const _throw = message => {
-  throw new Error(message);
-};
+  getCity(city) {
+    return this.fetchApi(
+      'locations/v1/cities/search',
+      data => data[0],
+      [{ key: 'q', value: city }]);
+  }
 
-const buildQueryString = queryParams => {
-  queryParams = queryParams ?? [];
-  queryParams.push({ key: 'apikey', value: apiKey });
+  getWeather(cityKey) {
+    return this.fetchApi(
+      `currentconditions/v1/${cityKey}`,
+      data => data[0]);
+  }
 
-  return '?' + queryParams
-    .map(param => `${param.key}=${param.value}`)
-    .join('&');
-};
+  async fetchApi(path, dataSelector, queryParams) {
+    const base = this.apiBaseUri + path;
+    const query = this.buildQueryString(queryParams);
+    const url = base + query;
 
-const getCity = city => fetchApi(
-  'locations/v1/cities/search',
-  data => data[0],
-  [{ key: 'q', value: city }]);
+    const response = await fetch(url);
 
-const getWeather = cityKey => fetchApi(
-  `currentconditions/v1/${cityKey}`,
-  data => data[0]);
+    response.ok || _throw(
+      `Error while calling ${url}:\n${response.status} ${response.statusText}.`);
 
-const fetchApi = async (path, dataSelector, queryParams) => {
-  const base = 'http://dataservice.accuweather.com/' + path;
-  const query = buildQueryString(queryParams);
-  const url = base + query;
+    const data = await response.json();
 
-  const response = await fetch(url);
+    return dataSelector(data);
+  }
 
-  response.ok || _throw(
-    `Error while calling ${url}:\n${response.status} ${response.statusText}.`);
+  buildQueryString(queryParams) {
+    queryParams = queryParams ?? [];
+    queryParams.push({ key: 'apikey', value: this.apiKey });
 
-  const data = await response.json();
+    return '?' + queryParams
+      .map(param => `${param.key}=${param.value}`)
+      .join('&');
+  };
 
-  return dataSelector(data);
-};
+  throw(message) {
+    throw new Error(message);
+  }
+}
