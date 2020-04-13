@@ -15,14 +15,12 @@ const loadCity = () => localStorage.getItem(cityStorageKey);
 
 const updateInformation = city => getCityInformation(city)
   .then(data => updateUI(data))
-  .catch(err => console(err));
+  .catch(err => console.log(err));
 
-const updateUI = cityInformation => {
-  const { details, weather } = cityInformation;
-
+const updateUI = ({ details, weather }) => {
   cityNameLabel.textContent = details.EnglishName;
   weatherTextLabel.textContent = weather.WeatherText;
-  weatherTempLabel.textContent = weather.Temperature.Metric.Value;
+  weatherTempLabel.textContent = `${weather.Temperature.Metric.Value}°`;
 
   const iconSrc = `img/icons/${weather.WeatherIcon}.svg`;
   iconImg.setAttribute('src', iconSrc);
@@ -33,12 +31,18 @@ const updateUI = cityInformation => {
   cardBlock.classList.remove('d-none');
 };
 
-const getCityInformation = async city => {
-  const details = await getCity(city);
-  const weather = await getWeather(details.Key);
+const getCityInformation = city => new Promise((resolve, reject) => {
+  let details, weather;
 
-  return { details, weather };
-};
+  getCity(city)
+    .then(data => {
+      details = data;
+      return getWeather(data.Key);
+    }).then(data => {
+      weather = data;
+      resolve({ details, weather });
+    }).catch(err => console.log(err));
+});
 
 cityForm.addEventListener('submit', e => {
   e.preventDefault();

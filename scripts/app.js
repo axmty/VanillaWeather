@@ -15,12 +15,10 @@ const updateInformation = city => getCityInformation(city)
   .then(data => updateUI(data))
   .catch(err => console.error(err));
 
-const updateUI = cityInformation => {
-  const { details, weather } = cityInformation;
-
+const updateUI = ({ details, weather }) => {
   cityNameLabel.textContent = details.EnglishName;
   weatherTextLabel.textContent = weather.WeatherText;
-  weatherTempLabel.textContent = weather.Temperature.Metric.Value;
+  weatherTempLabel.textContent = `${weather.Temperature.Metric.Value}°`;
 
   const iconSrc = `img/icons/${weather.WeatherIcon}.svg`;
   iconImg.setAttribute('src', iconSrc);
