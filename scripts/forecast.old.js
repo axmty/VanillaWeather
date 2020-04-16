@@ -1,43 +1,61 @@
-// Old-way version of forecast.js, using XMLHttpRequest and Promises instead of async/await.
+// Old-way version of forecast.js, using XMLHttpRequest, Promises instead of async/await and no class.
 
-const apiKey = 'UjGZ3wDnAgxo5dfepqdFeA5ClutLSTQe';
+let Forecast = (function () {
+  let self;
 
-const buildQueryString = queryParams => {
-  queryParams = queryParams ?? [];
-  queryParams.push({ key: 'apikey', value: apiKey });
+  function Forecast() {
+    self = this;
 
-  return '?' + queryParams
-    .map(param => `${param.key}=${param.value}`)
-    .join('&');
-};
+    this.apiKey = 'UjGZ3wDnAgxo5dfepqdFeA5ClutLSTQe';
+    this.apiBaseUri = 'http://dataservice.accuweather.com/';
+  };
 
-const getCity = city => fetchApi(
-  'locations/v1/cities/search',
-  data => data[0],
-  [{ key: 'q', value: city }]);
+  const buildQueryString = queryParams => {
+    queryParams = queryParams ?? [];
+    queryParams.push({ key: 'apikey', value: self.apiKey });
 
-const getWeather = cityKey => fetchApi(
-  `currentconditions/v1/${cityKey}`,
-  data => data[0]);
+    return '?' + queryParams
+      .map(param => `${param.key}=${param.value}`)
+      .join('&');
+  };
 
-const fetchApi = (path, dataSelector, queryParams) => new Promise((resolve, reject) => {
-  const base = 'http://dataservice.accuweather.com/' + path;
-  const query = buildQueryString(queryParams);
-  const url = base + query;
+  const fetchApi = function (path, dataSelector, queryParams) {
+    return new Promise((resolve, reject) => {
+      const base = self.apiBaseUri + path;
+      const query = buildQueryString(queryParams);
+      const url = base + query;
 
-  const request = new XMLHttpRequest();
+      const request = new XMLHttpRequest();
 
-  request.addEventListener('readystatechange', () => {
-    if (request.readyState !== 4) {
-      return;
-    } else if (request.status === 200) {
-      const data = JSON.parse(request.responseText);
-      resolve(dataSelector(data));
-    } else {
-      reject(`Error while calling ${url}:\n${request.status} ${request.statusText}.`);
-    }
-  });
+      request.addEventListener('readystatechange', () => {
+        if (request.readyState !== 4) {
+          return;
+        } else if (request.status === 200) {
+          const data = JSON.parse(request.responseText);
+          resolve(dataSelector(data));
+        } else {
+          reject(`Error while calling ${url}:\n${request.status} ${request.statusText}.`);
+        }
+      });
 
-  request.open('GET', base + query);
-  request.send();
-});
+      request.open('GET', base + query);
+      request.send();
+    })
+  };
+
+  Forecast.prototype.getCity = function (city) {
+    return fetchApi(
+      'locations/v1/cities/search',
+      data => data[0],
+      [{ key: 'q', value: city }]);
+  };
+
+  Forecast.prototype.getWeather = function (cityKey) {
+    return fetchApi(
+      `currentconditions/v1/${cityKey}`,
+      data => data[0]);
+  };
+
+  return Forecast;
+})();
+

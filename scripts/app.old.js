@@ -32,12 +32,13 @@ const updateUI = ({ details, weather }) => {
 };
 
 const getCityInformation = city => new Promise((resolve, reject) => {
+  const forecast = new Forecast();
   let details, weather;
 
-  getCity(city)
+  forecast.getCity(city)
     .then(data => {
       details = data;
-      return getWeather(data.Key);
+      return forecast.getWeather(data.Key);
     }).then(data => {
       weather = data;
       resolve({ details, weather });
