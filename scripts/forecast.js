@@ -33,7 +33,7 @@ class Forecast {
   }
 
   buildQueryString(queryParams) {
-    queryParams = queryParams ?? [];
+    queryParams = (queryParams !== undefined) ? queryParams : [];
     queryParams.push({ key: 'apikey', value: this.apiKey });
 
     return '?' + queryParams
@@ -45,3 +45,4 @@ class Forecast {
     throw new Error(message);
   }
 }
+export default Forecast;

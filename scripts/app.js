@@ -1,3 +1,5 @@
+import Forecast from './forecast';
+
 const cityForm = document.querySelector('form.change-location');
 const cardBlock = document.querySelector('.card');
 const timeImg = document.querySelector('.time');

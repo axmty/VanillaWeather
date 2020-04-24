@@ -11,7 +11,7 @@ let Forecast = (function () {
   };
 
   const buildQueryString = queryParams => {
-    queryParams = queryParams ?? [];
+    queryParams = (queryParams !== undefined) ? queryParams : [];
     queryParams.push({ key: 'apikey', value: self.apiKey });
 
     return '?' + queryParams
